@@ -1,11 +1,28 @@
 import { http, HttpResponse } from "msw";
-import items from "./items.json";
+import itemsData from "./items.json";
+import type {
+  CategoriesResponse,
+  FilterQuery,
+  Product,
+  SortType,
+} from "../types";
 
-const delay = async () => await new Promise((resolve) => setTimeout(resolve, 200));
+/**
+ * 상품 데이터 (JSON에서 가져온 원본 데이터)
+ */
+const items = itemsData as Product[];
 
-// 카테고리 추출 함수
+/**
+ * 딜레이 함수 (API 응답 시뮬레이션)
+ */
+const delay = async () =>
+  await new Promise((resolve) => setTimeout(resolve, 200));
+
+/**
+ * 카테고리 추출 함수
+ */
 function getUniqueCategories() {
-  const categories = {};
+  const categories: CategoriesResponse = {};
 
   items.forEach((item) => {
     const cat1 = item.category1;
@@ -18,15 +35,19 @@ function getUniqueCategories() {
   return categories;
 }
 
-// 상품 검색 및 필터링 함수
-function filterProducts(products, query) {
+/**
+ * 상품 검색 및 필터링 함수
+ */
+function filterProducts(products: Product[], query: FilterQuery) {
   let filtered = [...products];
 
   // 검색어 필터링
   if (query.search) {
     const searchTerm = query.search.toLowerCase();
     filtered = filtered.filter(
-      (item) => item.title.toLowerCase().includes(searchTerm) || item.brand.toLowerCase().includes(searchTerm),
+      (item) =>
+        item.title.toLowerCase().includes(searchTerm) ||
+        item.brand.toLowerCase().includes(searchTerm),
     );
   }
 
@@ -66,12 +87,15 @@ export const handlers = [
   // 상품 목록 API
   http.get("/api/products", async ({ request }) => {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") ?? url.searchParams.get("current")) || 1;
-    const limit = parseInt(url.searchParams.get("limit")) || 20;
+    const page = Number(
+      url.searchParams.get("page") ?? url.searchParams.get("current") ?? "1",
+    );
+    const limit = Number(url.searchParams.get("limit") ?? "20");
     const search = url.searchParams.get("search") || "";
     const category1 = url.searchParams.get("category1") || "";
     const category2 = url.searchParams.get("category2") || "";
-    const sort = url.searchParams.get("sort") || "price_asc";
+    const sort: SortType =
+      (url.searchParams.get("sort") as SortType) || "price_asc";
 
     // 필터링된 상품들
     const filteredProducts = filterProducts(items, {
@@ -126,7 +150,11 @@ export const handlers = [
       rating: Math.floor(Math.random() * 2) + 4, // 4~5점 랜덤
       reviewCount: Math.floor(Math.random() * 1000) + 50, // 50~1050개 랜덤
       stock: Math.floor(Math.random() * 100) + 10, // 10~110개 랜덤
-      images: [product.image, product.image.replace(".jpg", "_2.jpg"), product.image.replace(".jpg", "_3.jpg")],
+      images: [
+        product.image,
+        product.image.replace(".jpg", "_2.jpg"),
+        product.image.replace(".jpg", "_3.jpg"),
+      ],
     };
 
     await delay();

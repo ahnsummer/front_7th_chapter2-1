@@ -1,3 +1,6 @@
+/**
+ * MSW를 활성화하는 함수
+ */
 const enableMocking = () =>
   import("./mocks/browser.js").then(({ worker }) =>
     worker.start({
@@ -5,6 +8,9 @@ const enableMocking = () =>
     }),
   );
 
+/**
+ * 메인 함수 - 애플리케이션 초기화 및 레이아웃 렌더링
+ */
 function main() {
   const 상품목록_레이아웃_로딩 = `
     <div class="min-h-screen bg-gray-50">
