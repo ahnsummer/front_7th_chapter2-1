@@ -12,10 +12,15 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "incremental": true,
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "paths": {
+      "@core/*": ["./src/coreV2/*"]
+    }
   },
-  "include": ["src", "env.d.ts"],
+  "include": ["src", "env.d.ts", "jsx.d.ts"],
   "exclude": ["node_modules", "dist", "public"]
 }
