@@ -1,5 +1,5 @@
 import { nextTick } from "../../shared/utils/nextTick";
-import { rerender } from "../render";
+import { _rerender } from "../render";
 
 /**
  * @description 반응형 상태를 관리하는 클래스
@@ -113,7 +113,7 @@ export class State<T> {
 
     if (!options?.skipRerender) {
       await nextTick();
-      await rerender();
+      await _rerender();
     }
   }
 }

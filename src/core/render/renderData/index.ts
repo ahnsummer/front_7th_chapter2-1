@@ -1,4 +1,3 @@
-import { zip } from "../../../shared/utils/zip";
 import { normalizeTemplateLiterals } from "../template";
 import { RenderData } from "./RenderData";
 

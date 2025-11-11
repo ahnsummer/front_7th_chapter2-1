@@ -7,8 +7,6 @@ import { cleanup, registerHandlers } from "./handlers";
 import { runInitialSideEffects, runChangedSideEffects } from "./sideEffects";
 import morphdom from "morphdom";
 
-export { render, _rerender as rerender };
-
 /**
  * @description 초기 렌더링 함수
  * Template literal을 받아 Virtual DOM을 생성하고 실제 DOM에 렌더링
@@ -32,7 +30,7 @@ export { render, _rerender as rerender };
  * `;
  * // #root에 name과 age가 포함된 HTML이 렌더링됨
  */
-async function render(
+export async function render(
   strings: TemplateStringsArray,
   ...expressions: unknown[]
 ): Promise<void> {
@@ -62,7 +60,7 @@ async function render(
  *
  * @returns {Promise<void>} 리렌더링 완료 Promise
  */
-async function _rerender(): Promise<void> {
+export async function _rerender(): Promise<void> {
   console.log("rerender");
   const particles = getParticles();
 
