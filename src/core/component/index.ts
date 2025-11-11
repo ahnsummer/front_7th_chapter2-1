@@ -1,7 +1,3 @@
-import { on } from "../on";
-import { useEffect } from "../state/useEffect";
-import { useState } from "../state/useState";
-
 type ComponentConstructor<
   Props extends Record<string, unknown>,
   Children extends string | undefined = undefined,
@@ -120,6 +116,9 @@ export class HtmlTemplateNode {
  * render`${Timer({ interval: 1000 })}`;
  * // 1초마다 seconds가 증가하며 자동으로 화면 업데이트
  */
+export function component(
+  renderer: () => HtmlTemplateNode,
+): () => HtmlTemplateNode;
 export function component<const Props extends Record<string, unknown>>(
   renderer: (props: Props) => HtmlTemplateNode,
 ): (props: Props) => HtmlTemplateNode;
@@ -134,9 +133,9 @@ export function component<
 export function component<
   const Props extends Record<string, unknown>,
   const Children extends string | undefined = undefined,
->(renderer: (props: Props, children?: Children) => HtmlTemplateNode) {
+>(renderer: (props?: Props, children?: Children) => HtmlTemplateNode) {
   return ((props: Props) => {
-    if (renderer.length === 1) {
+    if (renderer.length <= 1) {
       return renderer(props);
     }
 
