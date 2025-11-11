@@ -30,10 +30,7 @@ import morphdom from "morphdom";
  * `;
  * // #root에 name과 age가 포함된 HTML이 렌더링됨
  */
-export async function render(
-  strings: TemplateStringsArray,
-  ...expressions: unknown[]
-): Promise<void> {
+export async function render(strings: TemplateStringsArray, ...expressions: unknown[]): Promise<void> {
   renderData.set(strings, expressions);
 
   const particles = getParticles();

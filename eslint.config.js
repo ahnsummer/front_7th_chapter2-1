@@ -21,7 +21,7 @@ export default [
       "max-len": [
         "warn",
         {
-          code: 80,
+          code: 120,
         },
       ],
       "no-unused-vars": "off",

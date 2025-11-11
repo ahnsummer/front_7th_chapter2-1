@@ -1,21 +1,10 @@
-import type {
-  CategoriesResponse,
-  GetProductsParams,
-  ProductDetailResponse,
-  ProductListResponse,
-} from "../types";
+import type { CategoriesResponse, GetProductsParams, ProductDetailResponse, ProductListResponse } from "../types";
 
 /**
  * 상품 목록 조회
  */
 export async function getProducts(params: GetProductsParams = {}) {
-  const {
-    limit = 20,
-    search = "",
-    category1 = "",
-    category2 = "",
-    sort = "price_asc",
-  } = params;
+  const { limit = 20, search = "", category1 = "", category2 = "", sort = "price_asc" } = params;
   const page = params.current ?? params.page ?? 1;
 
   const searchParams = new URLSearchParams({

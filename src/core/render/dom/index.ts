@@ -11,9 +11,7 @@ export function root(): HTMLElement {
   const rootNode = document.querySelector("#root");
 
   if (rootNode == null) {
-    throw new Error(
-      "#root 요소가 존재하지 않습니다. #root 요소를 추가해주세요.",
-    );
+    throw new Error("#root 요소가 존재하지 않습니다. #root 요소를 추가해주세요.");
   }
 
   return rootNode as HTMLElement;

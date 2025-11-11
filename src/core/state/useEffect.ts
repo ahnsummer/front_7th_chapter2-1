@@ -91,9 +91,7 @@ export const sideEffects = new Map<
  */
 export function useEffect<Dependencies extends unknown[]>(
   callback: (dependencies: {
-    [K in keyof Dependencies]: Dependencies[K] extends State<infer T>
-      ? T
-      : Dependencies[K];
+    [K in keyof Dependencies]: Dependencies[K] extends State<infer T> ? T : Dependencies[K];
   }) => void | (() => void),
   dependencies: Dependencies,
 ): void {

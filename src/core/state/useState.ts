@@ -98,14 +98,8 @@ export class State<T> {
    * await $user.set(prev => ({ ...prev, age: 26 }));
    * // { name: 'John', age: 26 }으로 업데이트되고 리렌더링
    */
-  async set(
-    value: T | ((value: T) => T),
-    options?: { skipRerender?: boolean },
-  ): Promise<void> {
-    this.value =
-      typeof value === "function"
-        ? (value as (value: T) => T)(this.value)
-        : value;
+  async set(value: T | ((value: T) => T), options?: { skipRerender?: boolean }): Promise<void> {
+    this.value = typeof value === "function" ? (value as (value: T) => T)(this.value) : value;
 
     this.subscribers.forEach(async ({ state, callback }) => {
       await state.set(callback(this.value), { skipRerender: true });

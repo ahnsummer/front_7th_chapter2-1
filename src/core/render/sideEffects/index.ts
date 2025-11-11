@@ -27,9 +27,7 @@ import { SnapshotSideEffect } from "../types";
  */
 export function runInitialSideEffects(): void {
   sideEffects.entries().forEach(([id, { dependencies, callback }]) => {
-    const deps = dependencies.map((dep) =>
-      dep instanceof State ? dep.get() : dep,
-    );
+    const deps = dependencies.map((dep) => (dep instanceof State ? dep.get() : dep));
     // 콜백 실행
     const cleanup = callback(deps);
     console.log("cleanup", cleanup);
@@ -87,26 +85,18 @@ export function runChangedSideEffects(): void {
       }
 
       // 현재 dependencies 값 추출
-      const currentDeps = dependencies.map((dep) =>
-        dep instanceof State ? dep.get() : dep,
-      );
+      const currentDeps = dependencies.map((dep) => (dep instanceof State ? dep.get() : dep));
 
       // 이전 스냅샷의 dependencies와 비교
-      const previousDeps = snapshot.sideEffects.find(
-        (sideEffect) => sideEffect.id === id,
-      )?.dependencies;
+      const previousDeps = snapshot.sideEffects.find((sideEffect) => sideEffect.id === id)?.dependencies;
 
       // 이전 값과 다르면 실행
       return !deepEqual(currentDeps, previousDeps);
     })
     .forEach(([id, { dependencies, callback }]) => {
-      const deps = dependencies.map((dep) =>
-        dep instanceof State ? dep.get() : dep,
-      );
+      const deps = dependencies.map((dep) => (dep instanceof State ? dep.get() : dep));
 
-      snapshot.sideEffects
-        .find((sideEffect) => sideEffect.id === id)
-        ?.cleanup?.();
+      snapshot.sideEffects.find((sideEffect) => sideEffect.id === id)?.cleanup?.();
 
       const cleanup = callback(deps);
 

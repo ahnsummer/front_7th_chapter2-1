@@ -47,19 +47,13 @@ import { State } from "../../state/useState";
 export function processNode(node: unknown): string {
   if (node instanceof HtmlTemplateNode) {
     const { strings, expressions } = node.getHTML();
-    return normalizeTemplateLiterals(strings, expressions)
-      .map(processNode)
-      .join("");
+    return normalizeTemplateLiterals(strings, expressions).map(processNode).join("");
   }
 
   if (node instanceof State) {
     const value = node.get();
 
-    if (Array.isArray(value)) {
-      return value.map(processNode).join("");
-    }
-
-    return String(value);
+    return processNode(value);
   }
 
   if (node instanceof EventHandler) {
@@ -85,9 +79,6 @@ export function processNode(node: unknown): string {
  * const result = normalizeTemplateLiterals(strings, expressions);
  * // result: ['<div>', 'Hello', ' world', '!', '</div>']
  */
-export function normalizeTemplateLiterals(
-  strings: TemplateStringsArray,
-  expressions: unknown[],
-): unknown[] {
+export function normalizeTemplateLiterals(strings: TemplateStringsArray, expressions: unknown[]): unknown[] {
   return zip([...strings], expressions.concat("")).flat();
 }
