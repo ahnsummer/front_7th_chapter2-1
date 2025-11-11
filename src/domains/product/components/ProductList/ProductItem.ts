@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { component, html } from "../../../../core/component";
 import { Product } from "../../../../types";
 

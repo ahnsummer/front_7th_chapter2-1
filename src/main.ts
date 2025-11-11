@@ -18,9 +18,11 @@ const enableMocking = () =>
  */
 function main() {
   render`
-     <div class="min-h-screen bg-gray-50">
+     <div class="bg-gray-50 flex flex-col flex-grow h-screen">
       ${TopBar()}
-      ${ProductListPage()}
+      <div class="flex-1">
+        ${ProductListPage()}
+      </div>
       ${Footer()}
     </div>
   `;
