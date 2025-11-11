@@ -49,5 +49,11 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "dependencies": {
+    "es-toolkit": "^1.41.0",
+    "morphdom": "^2.7.7",
+    "nanoid": "^5.1.6",
+    "xml-js": "^1.6.11"
   }
 }

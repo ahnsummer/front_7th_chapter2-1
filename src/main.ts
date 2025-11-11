@@ -1,3 +1,9 @@
+import { component, html } from "./core/component";
+import { on } from "./core/on";
+import { render } from "./core/render";
+import { useEffect } from "./core/state/useEffect";
+import { useState } from "./core/state/useState";
+
 /**
  * MSW를 활성화하는 함수
  */
@@ -1125,28 +1131,93 @@ function main() {
     </main>
   `;
 
-  document.body.innerHTML = `
-    ${상품목록_레이아웃_로딩}
-    <br />
-    ${상품목록_레이아웃_로딩완료}
-    <br />
-    ${상품목록_레이아웃_카테고리_1Depth}
-    <br />
-    ${상품목록_레이아웃_카테고리_2Depth}
-    <br />
-    ${토스트}
-    <br />
-    ${장바구니_비어있음}
-    <br />
-    ${장바구니_선택없음}
-    <br />
-    ${장바구니_선택있음}
-    <br />
-    ${상세페이지_로딩}
-    <br />
-    ${상세페이지_로딩완료}
-    <br />
-    ${_404_}
+  // document.body.innerHTML = `
+  //   ${상품목록_레이아웃_로딩}
+  //   <br />
+  //   ${상품목록_레이아웃_로딩완료}
+  //   <br />
+  //   ${상품목록_레이아웃_카테고리_1Depth}
+  //   <br />
+  //   ${상품목록_레이아웃_카테고리_2Depth}
+  //   <br />
+  //   ${토스트}
+  //   <br />
+  //   ${장바구니_비어있음}
+  //   <br />
+  //   ${장바구니_선택없음}
+  //   <br />
+  //   ${장바구니_선택있음}
+  //   <br />
+  //   ${상세페이지_로딩}
+  //   <br />
+  //   ${상세페이지_로딩완료}
+  //   <br />
+  //   ${_404_}
+  // `;
+
+  const Test2 = component(
+    (props: { a: string; b: number }, children: string) => {
+      const $count = useState(0);
+
+      useEffect(() => {
+        console.log("initial");
+      }, []);
+
+      useEffect(
+        ([count]) => {
+          console.log("count", count);
+
+          return () => {
+            console.log("cleanup", count);
+          };
+        },
+        [$count],
+      );
+
+      return html`
+        <div>
+          <div>
+            a = ${props.a}
+            <div>test</div>
+          </div>
+          <p>b = ${props.b}</p>
+          <div>
+            <p>children</p>
+            ${children}
+          </div>
+          ${$count.ref((count) =>
+            Array.from({ length: count }, (_, i) => i).map(
+              (i) => html` <p key="${i}">hello ${i}</p> `,
+            ),
+          )}
+          <button
+            ${on("click", () => {
+              console.log("click");
+              $count.set((prev) => prev + 1);
+            })}
+          >
+            plus
+          </button>
+          <button
+            ${on("click", () => {
+              console.log("click");
+              $count.set((prev) => prev - 1);
+            })}
+          >
+            minus
+          </button>
+        </div>
+      `;
+    },
+  );
+
+  render`
+    <div>
+      <div>hi~</div>
+      ${Test2({ a: `<div>???</div>`, b: 2 }).html`
+        <div>test</div>
+      `}
+    </div>  
   `;
 }
 
