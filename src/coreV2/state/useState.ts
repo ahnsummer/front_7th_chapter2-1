@@ -1,32 +1,10 @@
-import { assert, cloneDeep, isNil, isNotNil } from "es-toolkit";
-import { currentRenderingNode, render, renderTree } from "../../main";
-import { CompnentElementNode, DomNode, ElementNode } from "@core/jsx/factory";
+import { assert, isNil, isNotNil } from "es-toolkit";
+import { currentRenderingNode } from "../../main";
+import { CompnentElementNode } from "@core/jsx/factory";
+import { searchCurrentNode } from "@core/jsx/utils/searchCurrentNode";
+import { render } from "@core/render";
 
 export const stateMap = new Map<string, any>();
-
-function cloneClassInstance<T>(instance: T): T {
-  return Object.assign(
-    Object.create(Object.getPrototypeOf(instance)),
-    instance,
-  );
-}
-
-function searchCurrentNode(
-  key: string,
-  targetNode: ElementNode = renderTree!,
-): CompnentElementNode | null {
-  if (targetNode instanceof CompnentElementNode && key === targetNode.key)
-    return targetNode;
-
-  for (const child of targetNode.children) {
-    if (child instanceof ElementNode) {
-      const found = searchCurrentNode(key, child);
-      if (isNotNil(found)) return found;
-    }
-  }
-
-  return null;
-}
 
 export function useState<T>(
   initialValue: T,
@@ -60,7 +38,7 @@ export function useState<T>(
 
     assert(isNotNil(parentNode), "parentNode is not found");
 
-    render(parentNode, parentNode.parent);
+    render(parentNode, parentNode.parent, "");
   }
 
   return [state[stateCursor], setValue];

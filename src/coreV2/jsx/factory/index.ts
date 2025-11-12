@@ -1,3 +1,4 @@
+import { isNil } from "es-toolkit";
 import { nanoid } from "nanoid";
 
 export type DomNode =
@@ -13,12 +14,14 @@ export type DomNode =
       state?: Array<any>;
       stateCursor?: number;
       parent?: HTMLElement | DocumentFragment;
+      key?: any;
     };
 
 export class ElementNode {
   constructor(
     public tag: unknown,
     public children: DomNode[],
+    public key?: any,
   ) {}
 }
 
@@ -26,6 +29,7 @@ export class FragmentNode extends ElementNode {
   constructor(
     public tag: "Fragment",
     public children: DomNode[],
+    public key?: any,
   ) {
     super("Fragment", children);
   }
@@ -43,7 +47,7 @@ export class DomElementNode extends ElementNode {
 }
 export class CompnentElementNode extends ElementNode {
   constructor(
-    public key: string,
+    public key: any,
     public tag: (...args: any[]) => DomNode,
     public props: { [key: string]: unknown },
     public children: DomNode[],
@@ -51,6 +55,7 @@ export class CompnentElementNode extends ElementNode {
     public stateCursor?: number,
     public parent?: HTMLElement | DocumentFragment,
     public nodes?: HTMLElement[],
+    public nestedComponenets?: CompnentElementNode[],
   ) {
     super(tag, children);
   }
@@ -62,16 +67,39 @@ export function h(
   ...children: DomNode[]
 ): DomNode {
   if (typeof tag === "function" && tag.name === "Fragment") {
-    return Fragment(props, ...children);
+    return Fragment(props, ...mapKeyToChildren(children));
   }
 
   if (typeof tag === "function") {
-    return new CompnentElementNode(nanoid(), tag, props, children);
+    return new CompnentElementNode(
+      String(props.key ?? ""),
+      tag,
+      props,
+      mapKeyToChildren(children),
+    );
   }
 
-  return new DomElementNode(tag, props, children);
+  return new DomElementNode(
+    tag,
+    props,
+    mapKeyToChildren(children),
+    String(props.key ?? ""),
+  );
 }
 
 export function Fragment(_: {}, ...children: DomNode[]): DomNode {
   return new FragmentNode("Fragment", children);
+}
+
+function mapKeyToChildren(children: DomNode[]): DomNode[] {
+  return children.map((child, idx) => {
+    if (typeof child !== "object" || isNil(child)) {
+      return child;
+    }
+
+    child.key =
+      isNil(child?.key) || child?.key === "" ? `idx:${idx}` : child.key;
+
+    return child;
+  });
 }
