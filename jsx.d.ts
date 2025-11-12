@@ -37,52 +37,94 @@ declare global {
     }
 
     /**
-     * 이벤트 핸들러 속성
+     * 이벤트 핸들러 속성 (제네릭)
      */
-    interface EventHandlers {
+    interface EventHandlers<T = HTMLElement> {
       // 마우스 이벤트
-      onClick?: (event: MouseEvent) => void;
-      onDoubleClick?: (event: MouseEvent) => void;
-      onContextMenu?: (event: MouseEvent) => void;
-      onMouseDown?: (event: MouseEvent) => void;
-      onMouseUp?: (event: MouseEvent) => void;
-      onMouseEnter?: (event: MouseEvent) => void;
-      onMouseLeave?: (event: MouseEvent) => void;
-      onMouseMove?: (event: MouseEvent) => void;
-      onMouseOver?: (event: MouseEvent) => void;
-      onMouseOut?: (event: MouseEvent) => void;
+      onClick?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onDoubleClick?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onContextMenu?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseDown?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseUp?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseEnter?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseLeave?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseMove?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseOver?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onMouseOut?: (
+        event: MouseEvent & { currentTarget: T; target: Element },
+      ) => void;
 
       // 키보드 이벤트
-      onKeyDown?: (event: KeyboardEvent) => void;
-      onKeyUp?: (event: KeyboardEvent) => void;
-      onKeyPress?: (event: KeyboardEvent) => void;
+      onKeyDown?: (
+        event: KeyboardEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onKeyUp?: (
+        event: KeyboardEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onKeyPress?: (
+        event: KeyboardEvent & { currentTarget: T; target: Element },
+      ) => void;
 
       // 포커스 이벤트
-      onFocus?: (event: FocusEvent) => void;
-      onBlur?: (event: FocusEvent) => void;
+      onFocus?: (
+        event: FocusEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onBlur?: (
+        event: FocusEvent & { currentTarget: T; target: Element },
+      ) => void;
 
       // 폼 이벤트
-      onChange?: (event: Event) => void;
-      onInput?: (event: Event) => void;
-      onSubmit?: (event: Event) => void;
-      onReset?: (event: Event) => void;
+      onChange?: (event: Event & { currentTarget: T; target: Element }) => void;
+      onInput?: (event: Event & { currentTarget: T; target: Element }) => void;
+      onSubmit?: (event: Event & { currentTarget: T; target: Element }) => void;
+      onReset?: (event: Event & { currentTarget: T; target: Element }) => void;
 
       // 클립보드 이벤트
-      onCopy?: (event: ClipboardEvent) => void;
-      onCut?: (event: ClipboardEvent) => void;
-      onPaste?: (event: ClipboardEvent) => void;
+      onCopy?: (
+        event: ClipboardEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onCut?: (
+        event: ClipboardEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onPaste?: (
+        event: ClipboardEvent & { currentTarget: T; target: Element },
+      ) => void;
 
       // 기타 이벤트
-      onScroll?: (event: Event) => void;
-      onWheel?: (event: WheelEvent) => void;
-      onDrag?: (event: DragEvent) => void;
-      onDrop?: (event: DragEvent) => void;
+      onScroll?: (event: Event & { currentTarget: T; target: Element }) => void;
+      onWheel?: (
+        event: WheelEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onDrag?: (
+        event: DragEvent & { currentTarget: T; target: Element },
+      ) => void;
+      onDrop?: (
+        event: DragEvent & { currentTarget: T; target: Element },
+      ) => void;
     }
 
     /**
      * 모든 HTML 요소의 기본 속성
      */
-    type CommonAttributes = HTMLAttributes & EventHandlers;
+    type CommonAttributes<T = HTMLElement> = HTMLAttributes & EventHandlers<T>;
 
     // ========================================
     // 개별 요소 타입
@@ -91,7 +133,7 @@ declare global {
     /**
      * <input> 요소 속성
      */
-    interface InputAttributes extends CommonAttributes {
+    interface InputAttributes extends CommonAttributes<HTMLInputElement> {
       type?:
         | "text"
         | "password"
@@ -136,7 +178,7 @@ declare global {
     /**
      * <button> 요소 속성
      */
-    interface ButtonAttributes extends CommonAttributes {
+    interface ButtonAttributes extends CommonAttributes<HTMLButtonElement> {
       type?: "button" | "submit" | "reset";
       disabled?: boolean;
       name?: string;
@@ -147,7 +189,7 @@ declare global {
     /**
      * <form> 요소 속성
      */
-    interface FormAttributes extends CommonAttributes {
+    interface FormAttributes extends CommonAttributes<HTMLFormElement> {
       action?: string;
       method?: "get" | "post";
       encType?: string;
@@ -159,7 +201,7 @@ declare global {
     /**
      * <select> 요소 속성
      */
-    interface SelectAttributes extends CommonAttributes {
+    interface SelectAttributes extends CommonAttributes<HTMLSelectElement> {
       value?: string | string[];
       defaultValue?: string | string[];
       disabled?: boolean;
@@ -172,7 +214,7 @@ declare global {
     /**
      * <textarea> 요소 속성
      */
-    interface TextareaAttributes extends CommonAttributes {
+    interface TextareaAttributes extends CommonAttributes<HTMLTextAreaElement> {
       value?: string;
       defaultValue?: string;
       placeholder?: string;
@@ -191,7 +233,7 @@ declare global {
     /**
      * <label> 요소 속성
      */
-    interface LabelAttributes extends CommonAttributes {
+    interface LabelAttributes extends CommonAttributes<HTMLLabelElement> {
       htmlFor?: string;
       for?: string; // htmlFor alias
     }
@@ -199,7 +241,7 @@ declare global {
     /**
      * <a> 요소 속성
      */
-    interface AnchorAttributes extends CommonAttributes {
+    interface AnchorAttributes extends CommonAttributes<HTMLAnchorElement> {
       href?: string;
       target?: "_blank" | "_self" | "_parent" | "_top";
       rel?: string;
@@ -211,7 +253,7 @@ declare global {
     /**
      * <img> 요소 속성
      */
-    interface ImgAttributes extends CommonAttributes {
+    interface ImgAttributes extends CommonAttributes<HTMLImageElement> {
       src?: string;
       alt?: string;
       width?: string | number;
@@ -224,7 +266,7 @@ declare global {
     /**
      * <video> 요소 속성
      */
-    interface VideoAttributes extends CommonAttributes {
+    interface VideoAttributes extends CommonAttributes<HTMLVideoElement> {
       src?: string;
       width?: string | number;
       height?: string | number;
@@ -239,7 +281,7 @@ declare global {
     /**
      * <audio> 요소 속성
      */
-    interface AudioAttributes extends CommonAttributes {
+    interface AudioAttributes extends CommonAttributes<HTMLAudioElement> {
       src?: string;
       controls?: boolean;
       autoPlay?: boolean;
@@ -251,7 +293,7 @@ declare global {
     /**
      * <iframe> 요소 속성
      */
-    interface IframeAttributes extends CommonAttributes {
+    interface IframeAttributes extends CommonAttributes<HTMLIFrameElement> {
       src?: string;
       width?: string | number;
       height?: string | number;
@@ -264,7 +306,7 @@ declare global {
     /**
      * <canvas> 요소 속성
      */
-    interface CanvasAttributes extends CommonAttributes {
+    interface CanvasAttributes extends CommonAttributes<HTMLCanvasElement> {
       width?: string | number;
       height?: string | number;
     }
@@ -272,19 +314,174 @@ declare global {
     /**
      * <svg> 요소 속성
      */
-    interface SvgAttributes extends CommonAttributes {
+    interface SvgAttributes extends CommonAttributes<SVGSVGElement> {
       width?: string | number;
       height?: string | number;
       viewBox?: string;
       fill?: string;
       stroke?: string;
       xmlns?: string;
+      preserveAspectRatio?: string;
+    }
+
+    /**
+     * <defs> 요소 속성
+     */
+    interface DefsAttributes extends CommonAttributes<SVGDefsElement> {}
+
+    /**
+     * <linearGradient> 요소 속성
+     */
+    interface LinearGradientAttributes
+      extends CommonAttributes<SVGLinearGradientElement> {
+      id?: string;
+      x1?: string;
+      y1?: string;
+      x2?: string;
+      y2?: string;
+      gradientUnits?: "userSpaceOnUse" | "objectBoundingBox";
+      gradientTransform?: string;
+    }
+
+    /**
+     * <stop> 요소 속성
+     */
+    interface StopAttributes extends CommonAttributes<SVGStopElement> {
+      offset?: string | number;
+      stopColor?: string;
+      stopOpacity?: string | number;
+    }
+
+    /**
+     * <filter> 요소 속성
+     */
+    interface FilterAttributes extends CommonAttributes<SVGFilterElement> {
+      id?: string;
+      x?: string;
+      y?: string;
+      width?: string;
+      height?: string;
+      filterUnits?: "userSpaceOnUse" | "objectBoundingBox";
+    }
+
+    /**
+     * <feDropShadow> 요소 속성
+     */
+    interface FeDropShadowAttributes
+      extends CommonAttributes<SVGFEDropShadowElement> {
+      dx?: string | number;
+      dy?: string | number;
+      stdDeviation?: string | number;
+      floodColor?: string;
+      floodOpacity?: string | number;
+    }
+
+    /**
+     * <path> 요소 속성
+     */
+    interface PathAttributes extends CommonAttributes<SVGPathElement> {
+      d?: string;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string | number;
+      strokeLinecap?: "butt" | "round" | "square";
+      strokeLinejoin?: "miter" | "round" | "bevel";
+      strokeDasharray?: string;
+      strokeDashoffset?: string | number;
+    }
+
+    /**
+     * <circle> 요소 속성
+     */
+    interface CircleAttributes extends CommonAttributes<SVGCircleElement> {
+      cx?: string | number;
+      cy?: string | number;
+      r?: string | number;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string | number;
+      opacity?: string | number;
+    }
+
+    /**
+     * <rect> 요소 속성
+     */
+    interface RectAttributes extends CommonAttributes<SVGRectElement> {
+      x?: string | number;
+      y?: string | number;
+      width?: string | number;
+      height?: string | number;
+      rx?: string | number;
+      ry?: string | number;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string | number;
+      opacity?: string | number;
+    }
+
+    /**
+     * <text> 요소 속성
+     */
+    interface TextAttributes extends CommonAttributes<SVGTextElement> {
+      x?: string | number;
+      y?: string | number;
+      dx?: string | number;
+      dy?: string | number;
+      textAnchor?: "start" | "middle" | "end";
+      fontFamily?: string;
+      fontSize?: string | number;
+      fontWeight?: string | number;
+      fill?: string;
+      stroke?: string;
+    }
+
+    /**
+     * <g> 요소 속성
+     */
+    interface GAttributes extends CommonAttributes<SVGGElement> {
+      transform?: string;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string | number;
+      opacity?: string | number;
+    }
+
+    /**
+     * <line> 요소 속성
+     */
+    interface LineAttributes extends CommonAttributes<SVGLineElement> {
+      x1?: string | number;
+      y1?: string | number;
+      x2?: string | number;
+      y2?: string | number;
+      stroke?: string;
+      strokeWidth?: string | number;
+    }
+
+    /**
+     * <polyline> 요소 속성
+     */
+    interface PolylineAttributes extends CommonAttributes<SVGPolylineElement> {
+      points?: string;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string | number;
+    }
+
+    /**
+     * <polygon> 요소 속성
+     */
+    interface PolygonAttributes extends CommonAttributes<SVGPolygonElement> {
+      points?: string;
+      fill?: string;
+      stroke?: string;
+      strokeWidth?: string | number;
     }
 
     /**
      * <option> 요소 속성
      */
-    interface OptionAttributes extends CommonAttributes {
+    interface OptionAttributes extends CommonAttributes<HTMLOptionElement> {
       value?: string | number;
       disabled?: boolean;
       selected?: boolean;
@@ -294,12 +491,12 @@ declare global {
     /**
      * <table> 관련 요소 속성
      */
-    interface TableAttributes extends CommonAttributes {
+    interface TableAttributes extends CommonAttributes<HTMLTableElement> {
       cellPadding?: string | number;
       cellSpacing?: string | number;
     }
 
-    interface TdThAttributes extends CommonAttributes {
+    interface TdThAttributes extends CommonAttributes<HTMLTableCellElement> {
       colSpan?: number;
       rowSpan?: number;
       headers?: string;
@@ -309,7 +506,7 @@ declare global {
     /**
      * <meta> 요소 속성
      */
-    interface MetaAttributes extends CommonAttributes {
+    interface MetaAttributes extends CommonAttributes<HTMLMetaElement> {
       name?: string;
       content?: string;
       httpEquiv?: string;
@@ -319,7 +516,7 @@ declare global {
     /**
      * <link> 요소 속성
      */
-    interface LinkAttributes extends CommonAttributes {
+    interface LinkAttributes extends CommonAttributes<HTMLLinkElement> {
       href?: string;
       rel?: string;
       type?: string;
@@ -331,7 +528,7 @@ declare global {
     /**
      * <script> 요소 속성
      */
-    interface ScriptAttributes extends CommonAttributes {
+    interface ScriptAttributes extends CommonAttributes<HTMLScriptElement> {
       src?: string;
       type?: string;
       async?: boolean;
@@ -343,7 +540,7 @@ declare global {
     /**
      * <style> 요소 속성
      */
-    interface StyleAttributes extends CommonAttributes {
+    interface StyleAttributes extends CommonAttributes<HTMLStyleElement> {
       media?: string;
       type?: string;
     }
@@ -354,41 +551,41 @@ declare global {
 
     interface IntrinsicElements {
       // 텍스트 컨텐츠
-      div: CommonAttributes;
-      span: CommonAttributes;
-      p: CommonAttributes;
-      h1: CommonAttributes;
-      h2: CommonAttributes;
-      h3: CommonAttributes;
-      h4: CommonAttributes;
-      h5: CommonAttributes;
-      h6: CommonAttributes;
-      strong: CommonAttributes;
-      em: CommonAttributes;
-      b: CommonAttributes;
-      i: CommonAttributes;
-      u: CommonAttributes;
-      small: CommonAttributes;
-      mark: CommonAttributes;
-      del: CommonAttributes;
-      ins: CommonAttributes;
-      sub: CommonAttributes;
-      sup: CommonAttributes;
-      code: CommonAttributes;
-      pre: CommonAttributes;
-      blockquote: CommonAttributes;
-      q: CommonAttributes;
-      cite: CommonAttributes;
-      abbr: CommonAttributes;
-      address: CommonAttributes;
+      div: CommonAttributes<HTMLDivElement>;
+      span: CommonAttributes<HTMLSpanElement>;
+      p: CommonAttributes<HTMLParagraphElement>;
+      h1: CommonAttributes<HTMLHeadingElement>;
+      h2: CommonAttributes<HTMLHeadingElement>;
+      h3: CommonAttributes<HTMLHeadingElement>;
+      h4: CommonAttributes<HTMLHeadingElement>;
+      h5: CommonAttributes<HTMLHeadingElement>;
+      h6: CommonAttributes<HTMLHeadingElement>;
+      strong: CommonAttributes<HTMLElement>;
+      em: CommonAttributes<HTMLElement>;
+      b: CommonAttributes<HTMLElement>;
+      i: CommonAttributes<HTMLElement>;
+      u: CommonAttributes<HTMLElement>;
+      small: CommonAttributes<HTMLElement>;
+      mark: CommonAttributes<HTMLElement>;
+      del: CommonAttributes<HTMLModElement>;
+      ins: CommonAttributes<HTMLModElement>;
+      sub: CommonAttributes<HTMLElement>;
+      sup: CommonAttributes<HTMLElement>;
+      code: CommonAttributes<HTMLElement>;
+      pre: CommonAttributes<HTMLPreElement>;
+      blockquote: CommonAttributes<HTMLQuoteElement>;
+      q: CommonAttributes<HTMLQuoteElement>;
+      cite: CommonAttributes<HTMLElement>;
+      abbr: CommonAttributes<HTMLElement>;
+      address: CommonAttributes<HTMLElement>;
 
       // 리스트
-      ul: CommonAttributes;
-      ol: CommonAttributes;
-      li: CommonAttributes;
-      dl: CommonAttributes;
-      dt: CommonAttributes;
-      dd: CommonAttributes;
+      ul: CommonAttributes<HTMLUListElement>;
+      ol: CommonAttributes<HTMLOListElement>;
+      li: CommonAttributes<HTMLLIElement>;
+      dl: CommonAttributes<HTMLDListElement>;
+      dt: CommonAttributes<HTMLElement>;
+      dd: CommonAttributes<HTMLElement>;
 
       // 폼 요소
       form: FormAttributes;
@@ -398,65 +595,81 @@ declare global {
       textarea: TextareaAttributes;
       label: LabelAttributes;
       option: OptionAttributes;
-      optgroup: CommonAttributes;
-      fieldset: CommonAttributes;
-      legend: CommonAttributes;
+      optgroup: CommonAttributes<HTMLOptGroupElement>;
+      fieldset: CommonAttributes<HTMLFieldSetElement>;
+      legend: CommonAttributes<HTMLLegendElement>;
 
       // 미디어
       img: ImgAttributes;
       video: VideoAttributes;
       audio: AudioAttributes;
-      source: CommonAttributes;
-      track: CommonAttributes;
-      picture: CommonAttributes;
+      source: CommonAttributes<HTMLSourceElement>;
+      track: CommonAttributes<HTMLTrackElement>;
+      picture: CommonAttributes<HTMLPictureElement>;
       canvas: CanvasAttributes;
+
+      // SVG 요소
       svg: SvgAttributes;
+      defs: DefsAttributes;
+      linearGradient: LinearGradientAttributes;
+      stop: StopAttributes;
+      filter: FilterAttributes;
+      feDropShadow: FeDropShadowAttributes;
+      path: PathAttributes;
+      circle: CircleAttributes;
+      rect: RectAttributes;
+      text: TextAttributes;
+      g: GAttributes;
+      line: LineAttributes;
+      polyline: PolylineAttributes;
+      polygon: PolygonAttributes;
+      ellipse: EllipseAttributes;
 
       // 테이블
       table: TableAttributes;
-      thead: CommonAttributes;
-      tbody: CommonAttributes;
-      tfoot: CommonAttributes;
-      tr: CommonAttributes;
+      thead: CommonAttributes<HTMLTableSectionElement>;
+      tbody: CommonAttributes<HTMLTableSectionElement>;
+      tfoot: CommonAttributes<HTMLTableSectionElement>;
+      tr: CommonAttributes<HTMLTableRowElement>;
       th: TdThAttributes;
       td: TdThAttributes;
-      caption: CommonAttributes;
-      col: CommonAttributes;
-      colgroup: CommonAttributes;
+      caption: CommonAttributes<HTMLTableCaptionElement>;
+      col: CommonAttributes<HTMLTableColElement>;
+      colgroup: CommonAttributes<HTMLTableColElement>;
 
       // 링크
       a: AnchorAttributes;
       link: LinkAttributes;
 
       // 구조
-      header: CommonAttributes;
-      footer: CommonAttributes;
-      main: CommonAttributes;
-      section: CommonAttributes;
-      article: CommonAttributes;
-      aside: CommonAttributes;
-      nav: CommonAttributes;
-      figure: CommonAttributes;
-      figcaption: CommonAttributes;
+      header: CommonAttributes<HTMLElement>;
+      footer: CommonAttributes<HTMLElement>;
+      main: CommonAttributes<HTMLElement>;
+      section: CommonAttributes<HTMLElement>;
+      article: CommonAttributes<HTMLElement>;
+      aside: CommonAttributes<HTMLElement>;
+      nav: CommonAttributes<HTMLElement>;
+      figure: CommonAttributes<HTMLElement>;
+      figcaption: CommonAttributes<HTMLElement>;
 
       // 메타
-      head: CommonAttributes;
-      title: CommonAttributes;
+      head: CommonAttributes<HTMLHeadElement>;
+      title: CommonAttributes<HTMLTitleElement>;
       meta: MetaAttributes;
-      base: CommonAttributes;
+      base: CommonAttributes<HTMLBaseElement>;
       style: StyleAttributes;
       script: ScriptAttributes;
 
       // 기타
       iframe: IframeAttributes;
-      details: CommonAttributes;
-      summary: CommonAttributes;
-      dialog: CommonAttributes;
-      hr: CommonAttributes;
-      br: CommonAttributes;
-      wbr: CommonAttributes;
-      template: CommonAttributes;
-      slot: CommonAttributes;
+      details: CommonAttributes<HTMLDetailsElement>;
+      summary: CommonAttributes<HTMLElement>;
+      dialog: CommonAttributes<HTMLDialogElement>;
+      hr: CommonAttributes<HTMLHRElement>;
+      br: CommonAttributes<HTMLBRElement>;
+      wbr: CommonAttributes<HTMLElement>;
+      template: CommonAttributes<HTMLTemplateElement>;
+      slot: CommonAttributes<HTMLSlotElement>;
     }
   }
 }
