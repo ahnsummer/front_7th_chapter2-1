@@ -29,17 +29,17 @@ export function useState<T>(
   }
 
   function setValue(valueOrDispatcher: T | ((value: T) => T)) {
+    const parentNode = searchCurrentNode(key);
+    assert(isNotNil(parentNode), "parentNode is not found");
+    assert(isNotNil(parentNode.state), "parentNode.state is not set");
+
     if (typeof valueOrDispatcher === "function") {
       const dispatcher = valueOrDispatcher as (value: T) => T;
-      state[stateCursor] = dispatcher(cloneDeep(state[stateCursor]));
+      parentNode.state[stateCursor] = dispatcher(cloneDeep(state[stateCursor]));
     } else {
       const value = valueOrDispatcher as T;
-      state[stateCursor] = value;
+      parentNode.state[stateCursor] = value;
     }
-
-    const parentNode = searchCurrentNode(key);
-
-    assert(isNotNil(parentNode), "parentNode is not found");
 
     queueMicrotask(() => {
       render(parentNode, parentNode.parent, "");

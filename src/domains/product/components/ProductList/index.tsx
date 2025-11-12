@@ -6,14 +6,10 @@ import { SpinCircle } from "./SpinCircle";
 type ProductListProps = {
   products: Product[];
   isLoading: boolean;
-  itemsPerPage: number;
+  limit: number;
 };
 
-export function ProductList({
-  products,
-  isLoading,
-  itemsPerPage,
-}: ProductListProps) {
+export function ProductList({ products, isLoading, limit }: ProductListProps) {
   return (
     <div className="mb-6">
       <div>
@@ -27,7 +23,7 @@ export function ProductList({
         <div className="grid grid-cols-2 gap-4 mb-6" id="products-grid">
           {(() => {
             if (isLoading) {
-              return Array.from({ length: itemsPerPage }).map(() => (
+              return Array.from({ length: limit }).map(() => (
                 <ProductSkeleton />
               ));
             }

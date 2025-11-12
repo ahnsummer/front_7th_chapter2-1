@@ -137,6 +137,7 @@ export function createRouter<Routes extends Record<string, Route>>(
       });
 
       window.addEventListener("error", (event) => {
+        console.log("error", event.error);
         if (event.error === error) return;
 
         setError(event.error);

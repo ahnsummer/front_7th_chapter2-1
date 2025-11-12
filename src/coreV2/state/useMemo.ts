@@ -4,7 +4,7 @@ import { cloneDeep, isEqual, isNil } from "es-toolkit";
 
 export const sideEffectMap = new Map<string, () => void | Promise<void>>();
 
-export function useMemo<T>(callback: () => T, dependencies: any[]) {
+export function useMemo<T>(callback: () => T, dependencies: any[]): T {
   if (!(currentRenderingNode instanceof CompnentElementNode)) {
     throw new Error("currentRenderingNode is not an object");
   }

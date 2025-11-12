@@ -6,7 +6,7 @@ import {
   FragmentNode,
 } from "@core/jsx/factory";
 import { searchCurrentNode } from "@core/jsx/utils/searchCurrentNode";
-import { isNil, isNotNil, kebabCase, lowerCase } from "es-toolkit";
+import { cloneDeep, isNil, isNotNil, kebabCase, lowerCase } from "es-toolkit";
 
 export let renderTree: ElementNode | null = null;
 
@@ -16,7 +16,9 @@ export function render(
   jsx: DomNode | DomNode[],
   parent: HTMLElement | DocumentFragment = root(),
   path: string = "root",
-  onAppend?: (callback: (componentNode: CompnentElementNode) => void) => void,
+  onAppend?: (
+    callback: (componentNode: CompnentElementNode, position: number) => void,
+  ) => void,
 ): void {
   if (Array.isArray(jsx)) {
     jsx.forEach((child, idx) => {
@@ -51,15 +53,23 @@ export function render(
     const target = searchCurrentNode(jsx.key) ?? jsx;
 
     currentRenderingNode = target;
-    jsx.parent = parent;
-    jsx.state = jsx.state ?? [];
-    jsx.stateCursor = 0;
-    jsx.sideEffects = jsx.sideEffects ?? [];
-    jsx.sideEffectsCursor = 0;
+    target.parent = syncParent(parent);
+    target.state = target.state ?? [];
+    target.stateCursor = 0;
+    target.sideEffects = target.sideEffects ?? [];
+    target.sideEffectsCursor = 0;
+
+    const firstChild = target?.nodes?.[0];
+
+    const position = isNotNil(firstChild)
+      ? [...(target.parent?.children ?? [])].indexOf(firstChild)
+      : -1;
 
     target?.nodes?.forEach((node) => {
       node.remove();
     });
+
+    target.nodes = [];
 
     const rendered = jsx.tag({ ...jsx.props, children: jsx.children });
 
@@ -81,7 +91,7 @@ export function render(
     }
 
     render(rendered, parent, jsx.key, (callback) => {
-      callback(target);
+      callback(target, position);
     });
     return;
   }
@@ -107,7 +117,7 @@ export function render(
 
     if (key.startsWith("on") && typeof value === "function") {
       element.addEventListener(
-        lowerCase(key.replace("on", "")),
+        lowerCase(key.replace("on", "")).replace(/\s/g, ""),
         value as EventListener,
       );
       continue;
@@ -118,18 +128,47 @@ export function render(
       continue;
     }
 
+    if (key === "style") {
+      const styleObject = value as Record<string, string>;
+      const stringifiedStyle = Object.entries(styleObject)
+        .map(([key, value]) => `${kebabCase(key)}: ${value}`)
+        .join(";");
+      element.setAttribute("style", stringifiedStyle);
+      continue;
+    }
+
+    if (jsx.tag === "option" && key === "selected") {
+      if (value) {
+        element.setAttribute("selected", "true");
+      }
+      continue;
+    }
+
     element.setAttribute(kebabCase(key), value as string);
   }
+
+  jsx.key = jsx.props.key ?? jsx.key;
 
   element.setAttribute("data-jsx-key", jsx.key);
 
   if (isNotNil(onAppend)) {
-    onAppend?.((componentNode) => {
+    onAppend?.((componentNode, position) => {
+      let targetParent = parent;
+
+      if (parent instanceof HTMLElement) {
+        targetParent = document.querySelector(
+          `[data-jsx-key="${parent.dataset.jsxKey}"]`,
+        ) as HTMLElement;
+      }
       if (isNil(componentNode.nodes)) {
         componentNode.nodes = [];
       }
       componentNode.nodes?.push(element);
-      parent.appendChild(element);
+      if (position === -1) {
+        targetParent.appendChild(element);
+      } else {
+        targetParent.insertBefore(element, targetParent.children[position]);
+      }
     });
   } else {
     parent.appendChild(element);
@@ -142,4 +181,15 @@ export function render(
 
 function root(): HTMLElement {
   return document.querySelector("#root") as HTMLElement;
+}
+
+function syncParent(parent: HTMLElement | DocumentFragment) {
+  if (parent instanceof DocumentFragment) {
+    return parent;
+  }
+
+  const targetParent = document.querySelector(
+    `[data-jsx-key="${parent.dataset.jsxKey}"]`,
+  ) as HTMLElement;
+  return targetParent ?? parent;
 }

@@ -1,6 +1,7 @@
 import { CompnentElementNode } from "@core/jsx/factory";
 import { currentRenderingNode } from "@core/render";
 import { cloneDeep, isEqual, isNil } from "es-toolkit";
+import { nextTick } from "../../shared/components/utils/nextTick";
 
 export const sideEffectMap = new Map<string, () => void | (() => void)>();
 
@@ -31,13 +32,16 @@ export function useEffect<Dep extends any[]>(
   currentRenderingNode.sideEffectsCursor++;
 
   if (isNil(targetSideEffect)) {
-    const cleanup = callback();
+    nextTick().then(() => {
+      const cleanup = callback();
 
-    sideEffects[sideEffectsCursor] = {
-      callback: callback as any,
-      dependencies: cloneDeep(dependencies),
-      cleanup: cleanup as any,
-    };
+      sideEffects[sideEffectsCursor] = {
+        callback: callback as any,
+        dependencies: cloneDeep(dependencies),
+        cleanup: cleanup as any,
+      };
+    });
+
     return;
   }
 
@@ -45,8 +49,10 @@ export function useEffect<Dep extends any[]>(
 
   if (hasChanged) {
     targetSideEffect.cleanup?.();
-    const cleanup = callback();
-    targetSideEffect.cleanup = cleanup as any;
-    targetSideEffect.dependencies = cloneDeep(dependencies);
+    nextTick().then(() => {
+      const cleanup = callback();
+      targetSideEffect.cleanup = cleanup as any;
+      targetSideEffect.dependencies = cloneDeep(dependencies);
+    });
   }
 }
