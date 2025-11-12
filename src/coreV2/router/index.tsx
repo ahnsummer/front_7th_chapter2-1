@@ -15,8 +15,8 @@ export type Route = {
 
 type RouterProps = {
   fallback: {
-    notFound: DomNode;
-    error: DomNode;
+    notFound: () => DomNode;
+    error: (error: unknown) => DomNode;
   };
 };
 
@@ -75,6 +75,8 @@ export function createRouter<Routes extends Record<string, Route>>(
       [window.location.search],
     );
 
+    const [error, setError] = useState<unknown>(null);
+
     const getUrl = (
       routeName: keyof Routes,
       options?: {
@@ -87,8 +89,8 @@ export function createRouter<Routes extends Record<string, Route>>(
         route.path,
         options?.pathParams ?? {},
       );
-      const queeryString = qs.stringify(options?.queryParams ?? {});
-      return `${appliedPath}${queeryString === "" ? "" : `?${queeryString}`}`;
+      const queryString = qs.stringify(options?.queryParams ?? {});
+      return `${appliedPath}${queryString === "" ? "" : `?${queryString}`}`;
     };
 
     const push = <NextRouteName extends keyof Routes>(
@@ -129,10 +131,21 @@ export function createRouter<Routes extends Record<string, Route>>(
       window.addEventListener("popstate", () => {
         setRoute(detectCurrentRoute(routes) as RouteName);
       });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        setError(event.reason);
+      });
+
+      window.addEventListener("error", (event) => {
+        if (event.error === error) return;
+
+        setError(event.error);
+      });
     }, []);
 
     return {
       route,
+      error,
       pathParams,
       queryParams,
       push,
@@ -148,10 +161,14 @@ export function createRouter<Routes extends Record<string, Route>>(
 
   function Router({ fallback }: RouterProps) {
     const router = useInternalRouter();
-    const { route, pathParams, queryParams } = router;
+    const { route, error, pathParams, queryParams } = router;
+
+    if (isNotNil(error)) {
+      return fallback.error(error);
+    }
 
     if (isNil(route)) {
-      return fallback.notFound;
+      return fallback.notFound();
     }
 
     const RouteComponent = routes[route].component;
