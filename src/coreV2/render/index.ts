@@ -35,6 +35,7 @@ export function render(
 
   if (isNil(renderTree)) {
     renderTree = jsx as ElementNode;
+    (window as any).renderTree = renderTree;
   }
 
   if (typeof jsx === "boolean" || jsx == null) {
@@ -56,6 +57,8 @@ export function render(
     jsx.parent = parent;
     jsx.state = jsx.state ?? [];
     jsx.stateCursor = 0;
+    jsx.sideEffects = jsx.sideEffects ?? [];
+    jsx.sideEffectsCursor = 0;
 
     let idx = 0;
 
@@ -65,12 +68,21 @@ export function render(
 
     const rendered = jsx.tag({ ...jsx.props, children: jsx.children });
 
+    if (
+      rendered instanceof CompnentElementNode ||
+      rendered instanceof FragmentNode
+    ) {
+      jsx.nestedComponenets = jsx.nestedComponenets ?? [rendered];
+    }
+
     if (rendered instanceof ElementNode) {
       jsx.nestedComponenets =
         jsx.nestedComponenets ??
         (rendered.children.filter(
-          (child) => child instanceof CompnentElementNode,
-        ) as CompnentElementNode[]);
+          (child) =>
+            child instanceof CompnentElementNode ||
+            child instanceof FragmentNode,
+        ) as (CompnentElementNode | FragmentNode)[]);
     }
 
     render(rendered, parent, jsx.key, (callback) => {
@@ -127,8 +139,6 @@ export function render(
     render(child, element);
   }
 }
-
-(window as any).renderTree = renderTree;
 
 function root(): HTMLElement {
   return document.querySelector("#root") as HTMLElement;

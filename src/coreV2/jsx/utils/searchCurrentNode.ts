@@ -1,6 +1,6 @@
 import { isNotNil } from "es-toolkit";
 import { CompnentElementNode, ElementNode } from "../factory";
-import { renderTree } from "../../../main";
+import { renderTree } from "@core/render";
 
 export function searchCurrentNode(
   key: string,

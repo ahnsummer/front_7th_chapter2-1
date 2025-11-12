@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "es-toolkit": "^1.41.0",
-    "nanoid": "^5.1.6"
+    "nanoid": "^5.1.6",
+    "query-string": "^9.3.1"
   }
 }

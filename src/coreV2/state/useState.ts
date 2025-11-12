@@ -1,8 +1,7 @@
-import { assert, isNil, isNotNil } from "es-toolkit";
-import { currentRenderingNode } from "../../main";
+import { assert, cloneDeep, isNil, isNotNil } from "es-toolkit";
 import { CompnentElementNode } from "@core/jsx/factory";
 import { searchCurrentNode } from "@core/jsx/utils/searchCurrentNode";
-import { render } from "@core/render";
+import { currentRenderingNode, render } from "@core/render";
 
 export const stateMap = new Map<string, any>();
 
@@ -25,10 +24,14 @@ export function useState<T>(
   state[stateCursor] = state[stateCursor] ?? initialValue;
   currentRenderingNode.stateCursor++;
 
+  if (typeof state[stateCursor] === "object") {
+    Object.freeze(state[stateCursor]);
+  }
+
   function setValue(valueOrDispatcher: T | ((value: T) => T)) {
     if (typeof valueOrDispatcher === "function") {
       const dispatcher = valueOrDispatcher as (value: T) => T;
-      state[stateCursor] = dispatcher(state[stateCursor]);
+      state[stateCursor] = dispatcher(cloneDeep(state[stateCursor]));
     } else {
       const value = valueOrDispatcher as T;
       state[stateCursor] = value;
@@ -38,7 +41,9 @@ export function useState<T>(
 
     assert(isNotNil(parentNode), "parentNode is not found");
 
-    render(parentNode, parentNode.parent, "");
+    queueMicrotask(() => {
+      render(parentNode, parentNode.parent, "");
+    });
   }
 
   return [state[stateCursor], setValue];

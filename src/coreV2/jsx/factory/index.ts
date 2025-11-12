@@ -1,3 +1,4 @@
+import { CallbackReturn } from "@core/state/useEffect";
 import { isNil } from "es-toolkit";
 import { nanoid } from "nanoid";
 
@@ -53,9 +54,15 @@ export class CompnentElementNode extends ElementNode {
     public children: DomNode[],
     public state?: Array<any>,
     public stateCursor?: number,
+    public sideEffects?: Array<{
+      cleanup?: () => void;
+      callback: () => CallbackReturn;
+      dependencies: any[];
+    }>,
+    public sideEffectsCursor?: number,
     public parent?: HTMLElement | DocumentFragment,
     public nodes?: HTMLElement[],
-    public nestedComponenets?: CompnentElementNode[],
+    public nestedComponenets?: (CompnentElementNode | FragmentNode)[],
   ) {
     super(tag, children);
   }
