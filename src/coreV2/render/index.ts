@@ -22,6 +22,7 @@ export function render(
     callback: (componentNode: CompnentElementNode, position: number) => void,
   ) => void,
 ): void {
+  console.log(jsx);
   if (Array.isArray(jsx)) {
     jsx.forEach((child, idx) => {
       render(child, parent, `${path}[${idx}]`, onAppend);
@@ -193,7 +194,7 @@ export function render(
     element.setAttribute(kebabCase(key), String(value) as string);
   }
 
-  jsx.key = jsx.props.key ?? jsx.key;
+  jsx.key = jsx.props?.key ?? jsx.key;
 
   if (!svgTags.includes(jsx.tag)) {
     element.setAttribute("data-jsx-key", jsx.key);
