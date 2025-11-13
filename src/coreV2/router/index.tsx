@@ -212,7 +212,10 @@ function applyPathParams(path: string, pathParams: Record<string, string>) {
 }
 
 function extractPathParams(path: string) {
-  const splittedWindowPath = window.location.pathname.split("/");
+  const base = import.meta.env.BASE_URL;
+  const splittedWindowPath = window.location.pathname
+    .replace(base === "/" ? "" : `/${base}`, "")
+    .split("/");
   const result: Record<string, string> = {};
 
   for (const [idx, token] of path.split("/").entries()) {
@@ -227,7 +230,10 @@ function extractPathParams(path: string) {
 function detectCurrentRoute<Routes extends Record<string, Route>>(
   routes: Routes,
 ): keyof Routes | undefined {
-  const splittedPath = window.location.pathname.split("/");
+  const base = import.meta.env.BASE_URL;
+  const splittedPath = window.location.pathname
+    .replace(base === "/" ? "" : `/${base}`, "")
+    .split("/");
 
   return Object.entries(routes).find(([_, route]) =>
     route.path
