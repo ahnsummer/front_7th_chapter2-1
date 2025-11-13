@@ -2,6 +2,8 @@ import { sum } from "es-toolkit";
 import { useLocalStorage } from "../../../shared/hooks/useLocalStorage";
 import { Cart } from "../types";
 import { useMemo } from "@core/state/useMemo";
+import { CartModal } from "./CartModal";
+import { openOverlay } from "../../../shared/components/Overlay";
 
 export function CartButton() {
   const [cart] = useLocalStorage<Cart[]>("cart", []);
@@ -14,6 +16,9 @@ export function CartButton() {
     <button
       id="cart-icon-btn"
       className="relative p-2 text-gray-700 hover:text-gray-900 transition-colors"
+      onClick={() => {
+        openOverlay(({ close }) => <CartModal onClose={close} />);
+      }}
     >
       <svg
         className="w-6 h-6"

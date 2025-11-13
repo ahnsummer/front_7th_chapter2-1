@@ -5,6 +5,7 @@ import { Footer } from "./shared/components/Footer";
 import { NotFound } from "./pages/404";
 import { ErrorPage } from "./pages/500";
 import { ToastContainer } from "./shared/components/Toast";
+import { OverlayContainer } from "./shared/components/Overlay";
 
 function main() {
   render(
@@ -20,6 +21,7 @@ function main() {
       </div>
       <Footer />
       <ToastContainer />
+      <OverlayContainer />
     </div>,
   );
 }

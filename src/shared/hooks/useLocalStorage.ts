@@ -22,16 +22,19 @@ export function useLocalStorage<T>(
     } catch (error) {
       console.error(error);
     }
-  }, [key]);
+  }, []);
 
   const setValue = (valueOrDispatcher: T | ((value: T) => T)) => {
     if (typeof valueOrDispatcher === "function") {
       const dispatcher = valueOrDispatcher as (value: T) => T;
-      setState(dispatcher(state));
+      const value = dispatcher(state);
+      localStorage.setItem(key, JSON.stringify(value));
+      setState(value);
       return;
     }
 
     const value = valueOrDispatcher as T;
+    localStorage.setItem(key, JSON.stringify(value));
     setState(value);
   };
 

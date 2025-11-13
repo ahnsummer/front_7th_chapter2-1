@@ -83,13 +83,14 @@ export function Toast({ variant, title, onDestroy }: ToastProps) {
 
   return (
     <div
-      className={`${color} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 max-w-sm`}
+      className={`${color} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 max-w-sm pointer-events-auto`}
     >
       <div className="flex-shrink-0">{icon}</div>
       <p className="text-sm font-medium">{title}</p>
       <button
         id="toast-close-btn"
         className="flex-shrink-0 ml-2 text-white hover:text-gray-200"
+        onClick={onDestroy}
       >
         <svg
           className="w-4 h-4"
@@ -132,7 +133,7 @@ export function ToastContainer() {
 
   return (
     <div
-      className="fixed w-screen p-2 flex flex-col gap-2 items-end justify-center mx-auto"
+      className="fixed w-screen p-2 flex flex-col gap-2 items-end justify-center mx-auto pointer-events-none"
       style={{ zIndex: "99" }}
     >
       {toasts.map((toast) => (

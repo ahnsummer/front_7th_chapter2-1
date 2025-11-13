@@ -19,6 +19,7 @@ export function useState<T>(
     throw new Error("parentNode.state or parentNode.stateCursor is not set");
   }
 
+  const cloned = cloneDeep(currentRenderingNode);
   const { key, state, stateCursor } = currentRenderingNode;
 
   state[stateCursor] = state[stateCursor] ?? initialValue;
@@ -30,6 +31,7 @@ export function useState<T>(
 
   function setValue(valueOrDispatcher: T | ((value: T) => T)) {
     const parentNode = searchCurrentNode(key);
+
     assert(isNotNil(parentNode), "parentNode is not found");
     assert(isNotNil(parentNode.state), "parentNode.state is not set");
 

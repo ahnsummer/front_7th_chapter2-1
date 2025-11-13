@@ -1,8 +1,10 @@
-import { cloneDeep } from "es-toolkit";
+import { cloneDeep, delay } from "es-toolkit";
 import { DomNode } from "@core/jsx/factory";
 import { rawRenderTree, render, renderTree } from "@core/render";
 
-export const stateMap = new Map<string, any>();
+const stateMap = new Map<string, any>();
+
+let enabled = true;
 
 export function useGlobalState<T>(
   key: string,
@@ -20,7 +22,17 @@ export function useGlobalState<T>(
     }
 
     queueMicrotask(() => {
+      if (!enabled) return;
+
+      enabled = false;
+      const root = document.querySelector("#root") as HTMLElement;
+
+      [...(root.children ?? [])].forEach((child) => {
+        child.remove();
+      });
       render(cloneDeep(rawRenderTree) as DomNode);
+
+      delay(500).then(() => (enabled = true));
     });
   }
 

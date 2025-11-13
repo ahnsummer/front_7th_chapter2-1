@@ -159,6 +159,13 @@ export function render(
       continue;
     }
 
+    if (key === "checked") {
+      if (value) {
+        element.setAttribute("checked", "true");
+      }
+      continue;
+    }
+
     if (jsx.tag === "option" && key === "selected") {
       if (value) {
         element.setAttribute("selected", "true");
