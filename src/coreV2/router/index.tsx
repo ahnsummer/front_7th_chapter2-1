@@ -214,7 +214,7 @@ function applyPathParams(path: string, pathParams: Record<string, string>) {
 function extractPathParams(path: string) {
   const base = import.meta.env.BASE_URL;
   const splittedWindowPath = window.location.pathname
-    .replace(base === "/" ? "" : `/${base}`, "")
+    .replace(base === "/" ? "" : `${base?.replace(/\/$/, "")}`, "")
     .split("/");
   const result: Record<string, string> = {};
 
@@ -232,7 +232,7 @@ function detectCurrentRoute<Routes extends Record<string, Route>>(
 ): keyof Routes | undefined {
   const base = import.meta.env.BASE_URL;
   const splittedPath = window.location.pathname
-    .replace(base === "/" ? "" : `/${base}`, "")
+    .replace(base === "/" ? "" : `${base?.replace(/\/$/, "")}`, "")
     .split("/");
 
   return Object.entries(routes).find(([_, route]) =>
@@ -254,8 +254,9 @@ export function getUrl<Routes extends Record<string, Route>>(
     queryParams?: Record<string, string>;
   },
 ) {
+  const base = import.meta.env.BASE_URL;
   const route = routes[routeName];
   const appliedPath = applyPathParams(route.path, options?.pathParams ?? {});
   const queryString = qs.stringify(options?.queryParams ?? {});
-  return `${appliedPath}${queryString === "" ? "" : `?${queryString}`}`;
+  return `${String(base).replace(/\/$/, "")}${appliedPath}${queryString === "" ? "" : `?${queryString}`}`;
 }
