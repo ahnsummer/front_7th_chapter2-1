@@ -22,7 +22,7 @@ export function render(
     callback: (componentNode: CompnentElementNode, position: number) => void,
   ) => void,
 ): void {
-  console.log(jsx);
+  console.log(cloneDeep(jsx));
   if (Array.isArray(jsx)) {
     jsx.forEach((child, idx) => {
       render(child, parent, `${path}[${idx}]`, onAppend);

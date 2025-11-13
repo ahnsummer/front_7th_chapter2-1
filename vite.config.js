@@ -4,6 +4,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => ({
   base: mode === "production" ? "/front_7th_chapter2-1/" : "/",
   plugins: [tsconfigPaths()],
+  build: {
+    minify: false,
+  },
   esbuild: {
     jsxFactory: "h",
     jsxFragment: "Fragment",
