@@ -35,8 +35,6 @@ export function ProductFilter({
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState<CategoriesResponse | null>(null);
 
-  console.log(category1, category2);
-
   const step = useMemo(() => (isNil(category1) ? 0 : 1), [category1]);
 
   const currentDisplayingCategories = useMemo(() => {

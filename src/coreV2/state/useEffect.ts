@@ -1,7 +1,7 @@
 import { CompnentElementNode } from "@core/jsx/factory";
 import { currentRenderingNode } from "@core/render";
 import { cloneDeep, isEqual, isNil } from "es-toolkit";
-import { nextTick } from "../../shared/components/utils/nextTick";
+import { nextTick } from "../../shared/utils/nextTick";
 
 export type CallbackReturn = any | (() => any);
 

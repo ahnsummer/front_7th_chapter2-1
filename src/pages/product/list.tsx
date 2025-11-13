@@ -131,18 +131,12 @@ export function ProductListPage() {
                 isLoading={isLoading}
                 limit={limit}
               />
-              {products.length > 0 && (
-                <ImpressionArea
-                  debounceTime={2000}
-                  onImpression={() => {
-                    setPage((prev) =>
-                      isNil(totalPages)
-                        ? prev + 1
-                        : Math.min(prev + 1, totalPages),
-                    );
-                  }}
-                />
-              )}
+              <ImpressionArea
+                debounceTime={500}
+                onImpression={() => {
+                  setPage((prev) => prev + 1);
+                }}
+              />
             </>
           );
         })()}

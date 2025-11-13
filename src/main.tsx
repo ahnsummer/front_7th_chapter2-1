@@ -7,23 +7,6 @@ import { ErrorPage } from "./pages/500";
 import { ToastContainer } from "./shared/components/Toast";
 import { OverlayContainer } from "./shared/components/Overlay";
 
-export function App() {
-  return (
-    <div className="flex flex-col h-screen w-full bg-gray-50">
-      <div className="flex-1">
-        <Router
-          fallback={{
-            notFound: NotFound,
-            error: ErrorPage,
-          }}
-        />
-      </div>
-      <ToastContainer />
-      <OverlayContainer />
-    </div>
-  );
-}
-
 function main() {
   render(
     <div className="flex flex-col h-screen w-full bg-gray-50">

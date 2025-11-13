@@ -124,6 +124,9 @@ export function ToastContainer() {
         const { variant, title } = event.detail;
         setToasts((prev) => [...prev, { id: nanoid(), variant, title }]);
       },
+      {
+        signal: controller.signal,
+      },
     );
 
     return () => {

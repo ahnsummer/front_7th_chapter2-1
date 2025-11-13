@@ -7,6 +7,7 @@ import {
 } from "@core/jsx/factory";
 import { searchCurrentNode } from "@core/jsx/utils/searchCurrentNode";
 import { cloneDeep, isNil, isNotNil, kebabCase, lowerCase } from "es-toolkit";
+import { decodeHtmlEntity } from "../../shared/utils/decodeHtmlEntity";
 
 export const renderTree: { tree: ElementNode | null; raw: ElementNode | null } =
   { tree: null, raw: null };
@@ -42,8 +43,8 @@ export function render(
   }
 
   if (!(jsx instanceof ElementNode)) {
-    const text = document.createTextNode(String(jsx));
-    parent.appendChild(text);
+    const text = decodeHtmlEntity(String(jsx));
+    parent.appendChild(document.createTextNode(text));
     return;
   }
 
@@ -135,6 +136,15 @@ export function render(
   for (const [key, value] of Object.entries(jsx.props ?? {}).filter(
     (key) => !String(key).startsWith("__"),
   )) {
+    if (key === "style") {
+      const styleObject = value as Record<string, string>;
+      const stringifiedStyle = Object.entries(styleObject)
+        .map(([key, value]) => `${kebabCase(key)}: ${value}`)
+        .join(";");
+      element.setAttribute("style", stringifiedStyle);
+      continue;
+    }
+
     if (key === "key") {
       continue;
     }
@@ -149,15 +159,6 @@ export function render(
 
     if (key === "className") {
       element.setAttribute("class", value as string);
-      continue;
-    }
-
-    if (key === "style") {
-      const styleObject = value as Record<string, string>;
-      const stringifiedStyle = Object.entries(styleObject)
-        .map(([key, value]) => `${kebabCase(key)}: ${value}`)
-        .join(";");
-      element.setAttribute("style", stringifiedStyle);
       continue;
     }
 
@@ -176,16 +177,20 @@ export function render(
     }
 
     if (key === "viewBox") {
-      element.setAttributeNS(null, "viewBox", value as string);
+      element.setAttributeNS(
+        "http://www.w3.org/2000/svg",
+        "viewBox",
+        value as string,
+      );
       continue;
     }
 
     if (svgTags.includes(jsx.tag)) {
-      element.setAttributeNS(null, kebabCase(key), value as string);
+      element.setAttribute(key, value as string);
       continue;
     }
 
-    element.setAttribute(kebabCase(key), value as string);
+    element.setAttribute(kebabCase(key), String(value) as string);
   }
 
   jsx.key = jsx.props.key ?? jsx.key;

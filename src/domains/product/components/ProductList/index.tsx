@@ -2,6 +2,7 @@ import { Product } from "../../types";
 import { ProductItem } from "./ProductItem";
 import { ProductSkeleton } from "./ProductSkeleton";
 import { SpinCircle } from "./SpinCircle";
+import { commaNumber } from "../../../../shared/utils/commaNumber";
 
 type ProductListProps = {
   totalProducts: number;
@@ -20,11 +21,15 @@ export function ProductList({
     <div className="mb-6">
       <div>
         {/* 상품 개수 정보 */}
-        <div className="mb-4 text-sm text-gray-600">
-          총{" "}
-          <span className="font-medium text-gray-900">{totalProducts}개</span>의
-          상품
-        </div>
+        {!isLoading && (
+          <div className="mb-4 text-sm text-gray-600">
+            총{" "}
+            <span className="font-medium text-gray-900">
+              {commaNumber(totalProducts)}개
+            </span>
+            의 상품
+          </div>
+        )}
         {/* 상품 그리드 */}
         <div className="grid grid-cols-2 gap-4 mb-6" id="products-grid">
           {(() => {

@@ -64,8 +64,6 @@ export function createRouter<Routes extends Record<string, any>>(
       [window.location.search],
     );
 
-    console.log(queryParams);
-
     const [error, setError] = useGlobalState<unknown>("error", null);
 
     const push = <NextRouteName extends keyof Routes>(
@@ -77,7 +75,7 @@ export function createRouter<Routes extends Record<string, any>>(
     ) => {
       const url = getUrl(routes, routeName, options);
       window.history.pushState({}, "", url);
-      // cleanup();
+      cleanup();
       renderTree.tree = null;
 
       setRoute(routeName as unknown as RouteName);
@@ -92,7 +90,7 @@ export function createRouter<Routes extends Record<string, any>>(
     ) => {
       const url = getUrl(routes, routeName, options);
       window.history.replaceState({}, "", url);
-      // cleanup();
+      cleanup();
       renderTree.tree = null;
 
       setRoute(routeName as unknown as RouteName);
@@ -100,36 +98,59 @@ export function createRouter<Routes extends Record<string, any>>(
 
     const back = () => {
       window.history.back();
-      // cleanup();
+      cleanup();
       renderTree.tree = null;
       setRoute(detectCurrentRoute(routes) as RouteName);
     };
 
     const forward = () => {
       window.history.forward();
-      // cleanup();
+      cleanup();
       setRoute(detectCurrentRoute(routes) as RouteName);
     };
 
     useEffect(() => {
-      window.addEventListener("popstate", () => {
-        // cleanup();
-        renderTree.tree = null;
-        setRoute(detectCurrentRoute(routes) as RouteName);
-      });
+      const controller = new AbortController();
+      window.addEventListener(
+        "popstate",
+        () => {
+          cleanup();
+          renderTree.tree = null;
+          setRoute(detectCurrentRoute(routes) as RouteName);
+        },
+        {
+          signal: controller.signal,
+        },
+      );
 
-      window.addEventListener("unhandledrejection", (event) => {
-        // cleanup();
-        setError(event.reason);
-      });
+      window.addEventListener(
+        "unhandledrejection",
+        (event) => {
+          cleanup();
+          setError(event.reason);
+        },
+        {
+          signal: controller.signal,
+        },
+      );
 
-      window.addEventListener("error", (event) => {
-        // cleanup();
-        console.log("error", event.error);
-        if (event.error === error) return;
+      window.addEventListener(
+        "error",
+        (event) => {
+          cleanup();
+          console.log("error", event.error);
+          if (event.error === error) return;
 
-        setError(event.error);
-      });
+          setError(event.error);
+        },
+        {
+          signal: controller.signal,
+        },
+      );
+
+      return () => {
+        controller.abort();
+      };
     }, []);
 
     return {
@@ -153,11 +174,15 @@ export function createRouter<Routes extends Record<string, any>>(
     const { route, error, pathParams, queryParams } = router;
 
     if (isNotNil(error)) {
-      return fallback.error(error);
+      const ErrorComponent = fallback.error;
+
+      return <ErrorComponent error={error} />;
     }
 
     if (isNil(route)) {
-      return fallback.notFound();
+      const NotFoundComponent = fallback.notFound;
+
+      return <NotFoundComponent />;
     }
 
     const RouteComponent = routes[route].component;

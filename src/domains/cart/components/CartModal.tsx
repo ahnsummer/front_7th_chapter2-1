@@ -4,13 +4,14 @@ import { Cart } from "../types";
 import { useMemo } from "@core/state/useMemo";
 import { useState } from "@core/state/useState";
 import { showToast } from "../../../shared/components/Toast";
+import { commaNumber } from "../../../shared/utils/commaNumber";
 
 type CartModalProps = {
   onClose: () => void;
 };
 
 export function CartModal({ onClose }: CartModalProps) {
-  const [cart, setCart] = useLocalStorage<Cart[]>("cart", []);
+  const [cart, setCart] = useLocalStorage<Cart[]>("shopping_cart", []);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const totalQuantity = useMemo(
@@ -24,7 +25,7 @@ export function CartModal({ onClose }: CartModalProps) {
 
   return (
     <div className="flex min-h-full items-end justify-center p-0 sm:items-center sm:p-4">
-      <div className="relative bg-white rounded-t-lg sm:rounded-lg shadow-xl w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-hidden">
+      <div className="cart-modal relative bg-white rounded-t-lg sm:rounded-lg shadow-xl w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-hidden">
         {/* 헤더 */}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900 flex items-center">
@@ -163,7 +164,7 @@ export function CartModal({ onClose }: CartModalProps) {
                         {item.product.title}
                       </h4>
                       <p className="text-sm text-gray-600 mt-1">
-                        {item.product.lprice}원
+                        {commaNumber(Number(item.product.lprice))}원
                       </p>
                       {/* 수량 조절 */}
                       <div className="flex items-center mt-2">
@@ -248,7 +249,10 @@ export function CartModal({ onClose }: CartModalProps) {
                     {/* 가격 및 삭제 */}
                     <div className="text-right ml-3">
                       <p className="text-sm font-medium text-gray-900">
-                        {Number(item.product.lprice) * item.quantity}원
+                        {commaNumber(
+                          Number(item.product.lprice) * item.quantity,
+                        )}
+                        원
                       </p>
                       <button
                         className="cart-item-remove-btn mt-1 text-xs text-red-600 hover:text-red-800"
@@ -280,7 +284,7 @@ export function CartModal({ onClose }: CartModalProps) {
           <div className="flex justify-between items-center mb-4">
             <span className="text-lg font-bold text-gray-900">총 금액</span>
             <span className="text-xl font-bold text-blue-600">
-              {totalPrice}원
+              {commaNumber(totalPrice)}원
             </span>
           </div>
           {/* 액션 버튼들 */}

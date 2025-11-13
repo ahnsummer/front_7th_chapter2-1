@@ -1,8 +1,6 @@
 import { cloneDeep, delay } from "es-toolkit";
 import { render, renderTree } from "@core/render";
-import { App } from "../../main";
 import { DomNode } from "@core/jsx/factory";
-import { nextTick } from "../../shared/components/utils/nextTick";
 
 const stateMap = new Map<string, any>();
 

@@ -6,6 +6,8 @@ import { useState } from "@core/state/useState";
 import { useLocalStorage } from "../../../../shared/hooks/useLocalStorage";
 import { Cart } from "../../../cart/types";
 import { Link } from "@core/components/Link";
+import { commaNumber } from "../../../../shared/utils/commaNumber";
+import { showToast } from "../../../../shared/components/Toast";
 
 type ProductDetailProps = {
   id: string;
@@ -43,9 +45,8 @@ export function ProductDetail({ id }: ProductDetailProps) {
     fetchRelatedProducts();
   }, [product?.category1, product?.category2]);
 
-  console.log(product);
   const [quantity, setQuantity] = useState(1);
-  const [_, setCart] = useLocalStorage<Cart[]>("cart", []);
+  const [_, setCart] = useLocalStorage<Cart[]>("shopping_cart", []);
 
   if (isNil(product)) {
     return (
@@ -165,12 +166,12 @@ export function ProductDetail({ id }: ProductDetailProps) {
             {/* 가격 */}
             <div className="mb-4">
               <span className="text-2xl font-bold text-blue-600">
-                {product.lprice}원
+                {commaNumber(Number(product.lprice))}원
               </span>
             </div>
             {/* 재고 */}
             <div className="text-sm text-gray-600 mb-4">
-              재고 {product.stock}개
+              재고 {commaNumber(product.stock)}개
             </div>
             {/* 설명 */}
             <div className="text-sm text-gray-700 leading-relaxed mb-6">
@@ -257,6 +258,7 @@ export function ProductDetail({ id }: ProductDetailProps) {
 
                 return [...prev, { product, quantity }];
               });
+              showToast("success", "장바구니에 추가되었습니다");
             }}
           >
             장바구니 담기
@@ -299,7 +301,7 @@ export function ProductDetail({ id }: ProductDetailProps) {
                     {product.title}
                   </h3>
                   <p className="text-sm font-bold text-blue-600">
-                    {product.lprice}원
+                    {commaNumber(Number(product.lprice))}원
                   </p>
                 </div>
               </Link>

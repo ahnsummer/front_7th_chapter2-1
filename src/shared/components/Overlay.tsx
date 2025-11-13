@@ -21,19 +21,34 @@ export function OverlayContainer() {
       ) => {
         setOverlays((prev) => [...prev, event.detail]);
       },
+      {
+        signal: controller.signal,
+      },
     );
 
-    window.addEventListener("overlay:close", (event: CustomEvent<string>) => {
-      setOverlays((prev) =>
-        prev.filter((overlay) => overlay.id !== event.detail),
-      );
-    });
+    window.addEventListener(
+      "overlay:close",
+      (event: CustomEvent<string>) => {
+        setOverlays((prev) =>
+          prev.filter((overlay) => overlay.id !== event.detail),
+        );
+      },
+      {
+        signal: controller.signal,
+      },
+    );
 
-    window.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        setOverlays([]);
-      }
-    });
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape") {
+          setOverlays([]);
+        }
+      },
+      {
+        signal: controller.signal,
+      },
+    );
 
     return () => {
       controller.abort();
@@ -45,7 +60,7 @@ export function OverlayContainer() {
   return (
     <>
       <div
-        className="fixed w-screen h-screen top-0 left-0 bg-black/50"
+        className="cart-modal-overlay fixed w-screen h-screen top-0 left-0 bg-black/50"
         style={{ zIndex: "98" }}
         onClick={(e) => {
           const target = e.target as unknown as HTMLElement;
