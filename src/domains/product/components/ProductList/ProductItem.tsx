@@ -1,12 +1,18 @@
 /* eslint-disable max-len */
 
+import { isNotNil } from "es-toolkit";
+import { useLocalStorage } from "../../../../shared/hooks/useLocalStorage";
+import { Cart } from "../../../cart/types";
 import { Product } from "../../types";
+import { showToast } from "../../../../shared/components/Toast";
 
 type ProductItemProps = {
   product: Product;
 };
 
 export function ProductItem({ product }: ProductItemProps) {
+  const [_, setCart] = useLocalStorage<Cart[]>("cart", []);
+
   return (
     <div
       className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden product-card"
@@ -34,6 +40,22 @@ export function ProductItem({ product }: ProductItemProps) {
         <button
           className="w-full bg-blue-600 text-white text-sm py-2 px-3 rounded-md hover:bg-blue-700 transition-colors add-to-cart-btn"
           data-product-id={product.productId}
+          onClick={() => {
+            setCart((prev) => {
+              const existingCart = prev.find(
+                (cart) => cart.product.productId === product.productId,
+              );
+              if (isNotNil(existingCart)) {
+                return prev.map((cart) =>
+                  cart.product.productId === product.productId
+                    ? { ...cart, quantity: cart.quantity + 1 }
+                    : cart,
+                );
+              }
+              return [...prev, { product, quantity: 1 }];
+            });
+            showToast("success", "장바구니에 추가되었습니다");
+          }}
         >
           장바구니 담기
         </button>

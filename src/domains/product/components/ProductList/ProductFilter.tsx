@@ -73,7 +73,6 @@ export function ProductFilter({
             id="search-input"
             placeholder="상품명을 검색해보세요..."
             onKeyDown={(e) => {
-              console.log(e);
               if (e.key === "Enter") {
                 onSearch(e.currentTarget?.value);
               }
@@ -121,7 +120,6 @@ export function ProductFilter({
                   className="text-xs hover:text-blue-800 hover:underline"
                   onClick={() => {
                     const nextCategories = [...selectedCategories];
-                    console.log(nextCategories.slice(0, index + 1));
                     onChangeCategories(nextCategories.slice(0, index + 1));
                   }}
                 >

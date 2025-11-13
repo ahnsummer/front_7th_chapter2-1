@@ -1,7 +1,7 @@
 import { assert, cloneDeep, isNil, isNotNil } from "es-toolkit";
 import { CompnentElementNode } from "@core/jsx/factory";
 import { searchCurrentNode } from "@core/jsx/utils/searchCurrentNode";
-import { currentRenderingNode, render } from "@core/render";
+import { currentRenderingNode, render, renderTree } from "@core/render";
 
 export const stateMap = new Map<string, any>();
 

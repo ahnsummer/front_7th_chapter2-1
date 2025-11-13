@@ -4,6 +4,7 @@ import { Topbar } from "./shared/components/Topbar";
 import { Footer } from "./shared/components/Footer";
 import { NotFound } from "./pages/404";
 import { ErrorPage } from "./pages/500";
+import { ToastContainer } from "./shared/components/Toast";
 
 function main() {
   render(
@@ -18,6 +19,7 @@ function main() {
         />
       </div>
       <Footer />
+      <ToastContainer />
     </div>,
   );
 }

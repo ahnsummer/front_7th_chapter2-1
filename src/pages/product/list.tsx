@@ -27,8 +27,6 @@ export function ProductListPage() {
       setIsLoading(true);
       setError(null);
 
-      console.log(search);
-
       // throw new Error("테스트 에러입니다!");
 
       const response = await getProducts({
@@ -104,7 +102,6 @@ export function ProductListPage() {
               <ImpressionArea
                 debounceTime={2000}
                 onImpression={() => {
-                  console.log(page, totalPages);
                   setPage((prev) =>
                     isNil(totalPages)
                       ? prev + 1

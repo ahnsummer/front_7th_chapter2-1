@@ -9,6 +9,7 @@ import { searchCurrentNode } from "@core/jsx/utils/searchCurrentNode";
 import { cloneDeep, isNil, isNotNil, kebabCase, lowerCase } from "es-toolkit";
 
 export let renderTree: ElementNode | null = null;
+export let rawRenderTree: ElementNode | null = null;
 
 export let currentRenderingNode: DomNode = null;
 
@@ -27,9 +28,11 @@ export function render(
     return;
   }
 
-  if (isNil(renderTree)) {
+  if (isNil(renderTree) && isNil(rawRenderTree)) {
     renderTree = jsx as ElementNode;
     (window as any).renderTree = renderTree;
+    rawRenderTree = cloneDeep(renderTree);
+    (window as any).rawRenderTree = rawRenderTree;
   }
 
   if (typeof jsx === "boolean" || jsx == null) {
@@ -107,7 +110,26 @@ export function render(
     throw new Error("jsx is not a DomElementNode");
   }
 
-  const element = document.createElement(jsx.tag);
+  const svgTags = [
+    "svg",
+    "path",
+    "defs",
+    "linearGradient",
+    "stop",
+    "filter",
+    "feDropShadow",
+    "g",
+    "line",
+    "polyline",
+    "polygon",
+    "ellipse",
+    "rect",
+    "text",
+  ];
+
+  const element = svgTags.includes(jsx.tag)
+    ? document.createElementNS("http://www.w3.org/2000/svg", jsx.tag)
+    : document.createElement(jsx.tag);
   for (const [key, value] of Object.entries(jsx.props ?? {}).filter(
     (key) => !String(key).startsWith("__"),
   )) {
@@ -144,12 +166,24 @@ export function render(
       continue;
     }
 
+    if (key === "viewBox") {
+      element.setAttributeNS(null, "viewBox", value as string);
+      continue;
+    }
+
+    if (svgTags.includes(jsx.tag)) {
+      element.setAttributeNS(null, kebabCase(key), value as string);
+      continue;
+    }
+
     element.setAttribute(kebabCase(key), value as string);
   }
 
   jsx.key = jsx.props.key ?? jsx.key;
 
-  element.setAttribute("data-jsx-key", jsx.key);
+  if (!svgTags.includes(jsx.tag)) {
+    element.setAttribute("data-jsx-key", jsx.key);
+  }
 
   if (isNotNil(onAppend)) {
     onAppend?.((componentNode, position) => {
@@ -163,7 +197,7 @@ export function render(
       if (isNil(componentNode.nodes)) {
         componentNode.nodes = [];
       }
-      componentNode.nodes?.push(element);
+      componentNode.nodes?.push(element as HTMLElement);
       if (position === -1) {
         targetParent.appendChild(element);
       } else {
@@ -175,7 +209,7 @@ export function render(
   }
 
   for (const [idx, child] of jsx.children.entries()) {
-    render(child, element, `${path}[${idx}]`);
+    render(child, element as HTMLElement, `${path}[${idx}]`);
   }
 }
 
