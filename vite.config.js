@@ -2,7 +2,7 @@ import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(({ mode }) => ({
-  base: mode === "production" ? "/front-chapter2-1/" : "/",
+  base: mode === "production" ? "/front_7th_chapter2-1/" : "/",
   plugins: [tsconfigPaths()],
   esbuild: {
     jsxFactory: "h",
